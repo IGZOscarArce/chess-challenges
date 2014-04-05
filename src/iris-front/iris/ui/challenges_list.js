@@ -4,13 +4,16 @@ iris.ui(function (self) {
 	//	setting : null
 	// });
 
-	// var resource = iris.resource(iris.path.resource);
+	var
+		  chessResource = iris.resource(iris.path.resource.chess.js)
+		, chessModel = chessResource.getModel()
+	;
 
 	self.create = function() {
 		
 		self.tmpl(iris.path.ui.challenges_list.html);
 
-		self.on("load:challenges", self.render);
+		chessModel.on("load:challenges", self.render);
 	};
 
 	self.render = function(p_challenges) {
@@ -18,8 +21,11 @@ iris.ui(function (self) {
 			self.ui(
 				  "challenges"
 				, iris.path.ui.challenges_listitem.js
-				, p_challenges[i]
+				, {
+					challengeModel: p_challenges[i]
+				}
 			);
+
 		}
 	};
 

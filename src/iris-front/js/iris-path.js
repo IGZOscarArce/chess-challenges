@@ -11,6 +11,9 @@ iris.path = {
     },
     "problem": {
       "js": "model/problem.js"
+    },
+    "square": {
+      "js": "model/square.js"
     }
   },
   "resource": {

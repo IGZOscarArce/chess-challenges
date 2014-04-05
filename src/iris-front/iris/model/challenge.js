@@ -8,16 +8,18 @@ iris.model(function (self) {
 	
 	self.events('done', 'reject');
 
-	self.create = function(p_settings) {
+	self.create = function() {
 		var
-			problems = []
+			  problems = []
+			, problem_list = self.get("problem_list")
 		;
-		for (var i=0, I=p_settings.problem_list.length; i<I; i++) {
+		for (var i=0, I=problem_list.length; i<I; i++) {
 			problems.push(iris.model(
-				  iris.path.model.challenge.js
-				, p_settings.problem_list[i]
+				  iris.path.model.problem.js
+				, problem_list[i]
 			));
 		}
+		self.unset("problem_list");
         self.set("problems", problems);
     };
 	
