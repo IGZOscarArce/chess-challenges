@@ -2,11 +2,12 @@ iris.model(function (self) {
 	
 	self.defaults = {
 		  level: ""	// 'easy' / 'medium' / 'hard'
-		, challenges: []
+		, challenges: {}
+		, active: null
 	};
 	
 	var
-		  AVAILABLE_LEVEL = {
+		AVAILABLE_LEVEL = {
 			  "easy": "easy"
 			, "medium": "medium"
 			, "hard": "hard"
@@ -25,16 +26,24 @@ iris.model(function (self) {
 	
 	self.setChallenges = function(p_challenges){
 		var
-			challenges = []
+			challenges = {}
 		;
-		for (var i=0, I=p_challenges.length; i<I; i++) {
-			challenges.push(iris.model(
+		for (var key in p_challenges) {
+			challenges[key] = iris.model(
 				  iris.path.model.challenge.js
-				, p_challenges[i]
-			));
+				, p_challenges[key]
+			);
 		}
 		self.set("challenges", challenges);
-		self.notify("load:challenges", challenges);
+	};
+
+	self.setActive = function(p_challengeId){
+		var
+			challenge = self.get("challenges")[p_challengeId]
+		;
+		if (challenge) {
+			self.set("active", challenge);
+		}
 	};
 	
 }, iris.path.model.chess.js);

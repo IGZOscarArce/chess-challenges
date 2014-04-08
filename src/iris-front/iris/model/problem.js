@@ -1,9 +1,10 @@
 iris.model(function (self) {
 	
 	self.defaults = {
-		  time: 120				// Time for resolve (seconds)
+		  time: 0				// Time for resolve (seconds)
 		, solution: []			// list of boards (problem solution)
 		, status: 'inactive' 	// inactive / active / done / reject
+		, description: ''
 	};
 	
 	self.events('inactived', 'actived', 'done', 'reject');
@@ -20,7 +21,7 @@ iris.model(function (self) {
 			));
 		}
 		self.unset("solution_boards");
-        self.set("positions", positions);
+        self.set("solution", positions);
     };
 	
 }, iris.path.model.problem.js);

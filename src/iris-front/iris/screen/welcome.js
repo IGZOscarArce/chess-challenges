@@ -21,9 +21,11 @@ iris.screen(function (self) {
 		self.get("nav-home").on("click", onNavClick);
 	};
 
-	// self.awake = function () {
-
-	// };
+	self.awake = function () {
+		if (!document.location.hash) {
+			iris.navigate("#/challenges");
+		}
+	};
 
 	function onNavClick() {
 		var

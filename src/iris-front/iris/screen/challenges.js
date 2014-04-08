@@ -10,7 +10,8 @@ iris.screen(function (self) {
 		self.tmpl(iris.path.screen.challenges.html);
 
 		self.ui("challenges", iris.path.ui.challenges_list.js);
-		chessResource.loadChallenges();
+		chessResource.loadChallenges()
+			.done(self.ui("challenges").render);
 	};
 
 	// self.awake = function () {

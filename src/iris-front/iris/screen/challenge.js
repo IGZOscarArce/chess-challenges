@@ -1,23 +1,42 @@
 iris.screen(function (self) {
 
-	// var resource = iris.resource(iris.path.resource);
+	var
+		  chessResource = iris.resource(iris.path.resource.chess.js)
+		, chessModel = chessResource.getModel()
+		, challengeModel
+	;
 
 	self.create = function() {
 		
 		self.tmpl(iris.path.screen.challenge.html);
 	};
 
-	// self.awake = function () {
-		
-	// };
+	self.awake = function () {
+		challengeModel = chessModel.get("active");
 
-	// self.canSleep = function () {
-	// 	return true;
-	// };
+		if (!challengeModel) {
+			iris.navigate("#/challenges");
+		}
+		else {
+			var
+				  problems = challengeModel.get("problems")
+				, i = 0
+				, I = problems.length
+			;
+			for (; i<I; i++) {
+				self.ui("problems", iris.path.ui.problem.js, {index: i});
+			}
+			self.inflate({description: challengeModel.get("description")});
+		}
+	};
 
-	// self.sleep = function () {
+	self.canSleep = function () {
+		return false;
+	};
+
+	self.sleep = function () {
 		
-	// };
+	};
 
 	// self.destroy = function () {
 		

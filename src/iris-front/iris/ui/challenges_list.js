@@ -13,19 +13,12 @@ iris.ui(function (self) {
 		
 		self.tmpl(iris.path.ui.challenges_list.html);
 
-		chessModel.on("load:challenges", self.render);
+		//chessModel.on("load:challenges", self.render);
 	};
 
 	self.render = function(p_challenges) {
-		for (var i=0, I=p_challenges.length; i<I; i++) {
-			self.ui(
-				  "challenges"
-				, iris.path.ui.challenges_listitem.js
-				, {
-					challengeModel: p_challenges[i]
-				}
-			);
-
+		for (var key in p_challenges) {
+			self.ui("challenges", iris.path.ui.challenges_listitem.js, {challenge: key});
 		}
 	};
 

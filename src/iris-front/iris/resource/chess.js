@@ -37,12 +37,15 @@ iris.resource(function (self) {
 
 }, iris.path.resource.chess.js);
 
-var _MOCKED_CHALLENGES = [
-	{
+var _MOCKED_CHALLENGES = {
+	  1: {
 		  level: "easy"
+		, id: 1
+		, description: "Challange 1"
 		, problem_list: [
 			{
 				  time: 600 // seconds
+				, description: "problem 1"
 				, solution_boards: [
 					  { fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" }
 					, { fen: "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1" }
@@ -52,11 +55,14 @@ var _MOCKED_CHALLENGES = [
 			}
 		]
 	}
-	, {
+	, 2: {
 		  level: "hard"
+		, id: 2
+		, description: "Challange 2"
 		, problem_list: [
 			{
 				  time: 100 // seconds
+				, description: "problem 2"
 				, solution_boards: [
 					  { fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" }
 					, { fen: "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1" }
@@ -66,11 +72,14 @@ var _MOCKED_CHALLENGES = [
 			}
 		]
 	}
-	, {
+	, 3: {
 		  level: "medium"
+		, id: 3
+		, description: "Challange 3"
 		, problem_list: [
 			{
 				  time: 300 // seconds
+				, description: "problem 3"
 				, solution_boards: [
 					  { fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" }
 					, { fen: "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1" }
@@ -80,4 +89,4 @@ var _MOCKED_CHALLENGES = [
 			}
 		]
 	}
-];
+};

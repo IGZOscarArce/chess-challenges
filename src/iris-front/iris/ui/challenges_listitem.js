@@ -1,7 +1,7 @@
 iris.ui(function (self) {
 
 	self.settings({
-		challengeModel: null
+		challenge: null
 	});
 
 	var
@@ -15,7 +15,15 @@ iris.ui(function (self) {
 		self.tmpl(iris.path.ui.challenges_listitem.html);
 
 		self.get().on("click", function() {
-			self.get("challengeModel").set("status", "active");
+			chessModel.setActive(self.setting("challenge"));
+		});
+
+		var
+			challangeModel = chessModel.get("challenges")[self.setting("challenge")]
+		;
+		self.inflate({
+			  description: challangeModel.get("description")
+			, level: challangeModel.get("level")
 		});
 	};
 
@@ -27,8 +35,11 @@ iris.ui(function (self) {
 		chessModel.off("change:level", toggle);
 	};
 
-	function toggle(p_level) {
-		self.get().toggle(p_level === self.setting("level"));
+	function toggle(p_levelFilter) {
+		self.get().toggle(
+			  !p_levelFilter
+			|| p_levelFilter === self.setting("challengeModel").get("level")
+		);
 	}
 
 },iris.path.ui.challenges_listitem.js);

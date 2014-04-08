@@ -2,11 +2,13 @@ iris.model(function (self) {
 	
 	self.defaults = {
 		  level: 'easy' 		// easy / medium / hard
+		, description: ""
+		, id: ""
 		, problems: []			// list of problems
 		, status: 'inactive' 	// inactive / active / done / reject
 	};
 	
-	self.events('done', 'reject');
+	self.events('done:challenge', 'reject:challenge');
 
 	self.create = function() {
 		var
@@ -21,6 +23,16 @@ iris.model(function (self) {
 		}
 		self.unset("problem_list");
         self.set("problems", problems);
+    };
+
+    self.reject = function(){
+    	self.set("status", "reject");
+    	self.notify("reject:challenge", self.get("id"));
+    };
+
+    self.done = function(){
+    	self.set("status", "reject");
+    	self.notify("done:challenge", self.get("id"));
     };
 	
 }, iris.path.model.challenge.js);
