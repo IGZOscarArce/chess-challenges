@@ -4,6 +4,7 @@ iris.ui(function (self) {
 		  piece: null // FEN notation
 		, col: null
 		, row: null
+		, color: null
 	});
 
 	var PIECES_PATH_HASHMAP = {
@@ -15,27 +16,32 @@ iris.ui(function (self) {
 		, "r": iris.path.ui.rook.js
 	};
 
+	var
+		  chessModel = iris.resource(iris.path.resource.chess.js).getModel()
+		, boardModel = chessModel.get("board")
+	;
+
 	self.create = function() {
-		
+
 		self.tmpl(iris.path.ui.piece.html);
 
+		var
+			color = chess.color.getPieceColor(self.setting("piece"))
+		;
+		self.setting("color", color);
 		self.ui("piece", PIECES_PATH_HASHMAP[self.setting("piece").toLowerCase()], {
 			  col: self.setting("col")
 			, row: self.setting("row")
-			, color: chess.color.getPieceColor(self.setting("piece"))
+			, color: color
 		});
+
+		self.get()
+			.addClass(color === chess.color.WHITE ? "white" : "black")
+			.on("dragstart", onDragStart);
 	};
 
-	// self.awake = function () {
-		
-	// };
-
-	// self.sleep = function () {
-		
-	// };
-
-	// self.destroy = function () {
-		
-	// };
+	function onDragStart(p_ev) {
+		boardModel.moving(self.settings());
+	}
 
 },iris.path.ui.piece.js);

@@ -3,25 +3,18 @@ iris.ui(function (self) {
 	self.settings({
 		  col: null
 		, row: null
-		, color: "white" // "white" / "black"
+		, color: null
 	});
 
 	// var resource = iris.resource(iris.path.resource);
 
 	self.create = function() {
 		
-		// self.tmplMode(self.APPEND);
+		self.tmplMode(self.APPEND);
 		self.tmpl(iris.path.ui.pawn.html);
 
-		self.setting(
-			  "img"
-			, self.setting("color") === chess.color.WHITE
-				? "img/Chess_pdt45.svg"
-				: "img/Chess_plt45.svg"
-		);
-
 		self.inflate({
-			img: self.setting("img")
+			img: chess.image[self.setting("color")].PAWN
 		});
 	};
 

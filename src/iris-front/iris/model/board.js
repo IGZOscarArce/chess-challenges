@@ -15,8 +15,6 @@ iris.model(function (self) {
 			  , g: {1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null}
 			  , h: {1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null}
 		  }
-		, COLS: ["a", "b", "c", "d", "e", "f", "g", "h"] // Column names sorted
-		, ROWS: ["8", "7", "6", "5", "4", "3", "2", "1"] // Row names sorted (FEN has 8th row as the first)
 		, fen: ""			// FEN
 		, position: ""		// Position in FEN notation
 		, turn: "w"			// "w" means White moves next, "b" means Black
@@ -29,9 +27,10 @@ iris.model(function (self) {
 							// "Q" (White can castle queenside), 
 							// "k" (Black can castle kingside),
 							// and/or "q" (Black can castle queenside)
+		, moving: null 		// Piece moving
 	};
 	
-	self.events('done', 'reject');
+	self.events('piece:moving', 'piece:moved');
 
 	self.create = function(p_settings) {
 		////////////////////////////////////////
@@ -51,6 +50,31 @@ iris.model(function (self) {
 			, fullmoves: positionVals[5]
 			, squares: fenToSquares(positionVals[0])
 		});
+    };
+
+    self.moving = function(p_piece) {
+    	self.set("moving", p_piece);
+    	self.notify("piece:moving", {
+    		piece: p_piece
+    	});
+    };
+
+    self.moved = function(p_square) {
+    	var
+    		  piece = self.get("moving")
+    		, squares = self.get("squares")
+    		, from = squares[piece.col][piece.row]
+    		, to = squares[p_square.col][p_square.row]
+    	;
+    	self.notify("piece:moved", {
+    		  piece: self.get("moving")
+    		, from: squares[piece.col][piece.row]
+    		, to: squares[p_square.col][p_square.row]
+    	});
+    	// TODO: update board
+    	self.set("piece", null);
+    	to.set("piece", from.get("piece"));
+    	from.set("piece", null);
     };
 	
 	function fenToSquares(p_fenPos) {
@@ -90,12 +114,10 @@ iris.model(function (self) {
 		var
 			  squares = p_squares || self.get("squares")
 			, fenPos = ""
-			, COLS = self.get("COLS")
-			, ROWS = self.get("ROWS")
 		;
-		for (var i=0, I=ROWS.length; i<I; i++) {
-			for (var j=0, J=COLS.length; j<J; j++) {
-				fenPos += squares[COLS[j]][ROWS[i]].get("piece") || "v";
+		for (var i=0, I=chess.board.ROWS.length; i<I; i++) {
+			for (var j=0, J=chess.board.COLS.length; j<J; j++) {
+				fenPos += squares[chess.board.COLS[j]][chess.board.ROWS[i]].get("piece") || "v";
 			}
 			fenPos += "/";
 		}
