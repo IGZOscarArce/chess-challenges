@@ -1,13 +1,12 @@
 iris.ui(function (self) {
 
 	self.settings({
-		  index: 0
+		index: 0
 	});
 
 	var
 		  chessResource = iris.resource(iris.path.resource.chess.js)
 		, problemModel
-		, boardModel
 		, solution = []			// list of boards (problem solution)
 	;
 
@@ -22,7 +21,8 @@ iris.ui(function (self) {
 		;
 		problemModel = challengeModel.get("problems")[self.setting("index")];
 		fen = problemModel.get("solution")[0].get("fen");
-		boardModel = iris.model(iris.path.model.board.js, {fen: fen});
+
+		self.ui("board", iris.path.ui.board.js, {fen: fen});
 
 		self.inflate({
 			description: problemModel.get("description")

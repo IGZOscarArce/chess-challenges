@@ -1,8 +1,10 @@
 iris.ui(function (self) {
 
-	// self.settings({
-	//	setting : null
-	// });
+	self.settings({
+		  col: null
+		, row: null
+		, color: "white" // "white" / "black"
+	});
 
 	// var resource = iris.resource(iris.path.resource);
 
@@ -10,6 +12,17 @@ iris.ui(function (self) {
 		
 		// self.tmplMode(self.APPEND);
 		self.tmpl(iris.path.ui.pawn.html);
+
+		self.setting(
+			  "img"
+			, self.setting("color") === chess.color.WHITE
+				? "img/Chess_pdt45.svg"
+				: "img/Chess_plt45.svg"
+		);
+
+		self.inflate({
+			img: self.setting("img")
+		});
 	};
 
 	// self.awake = function () {

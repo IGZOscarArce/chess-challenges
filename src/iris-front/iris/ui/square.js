@@ -1,27 +1,29 @@
 iris.ui(function (self) {
 
-	// self.settings({
-	//	setting : null
-	// });
-
-	// var resource = iris.resource(iris.path.resource);
+	self.settings({
+		  col: null
+		, row: null
+		, piece: null 		// FEN notation
+		, color: null
+	});
 
 	self.create = function() {
 		
-		// self.tmplMode(self.APPEND);
+		self.tmplMode(self.APPEND);
 		self.tmpl(iris.path.ui.square.html);
+
+		if (self.setting("piece")) {
+			self.ui("piece", iris.path.ui.piece.js, {
+				  piece: self.setting("piece")
+				, col: null
+				, row: null
+			});
+		}
+
+		self.get().addClass(self.setting("color") === chess.color.WHITE
+			? "white"
+			: "black"
+		);
 	};
-
-	// self.awake = function () {
-		
-	// };
-
-	// self.sleep = function () {
-		
-	// };
-
-	// self.destroy = function () {
-		
-	// };
 
 },iris.path.ui.square.js);

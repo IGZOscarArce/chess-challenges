@@ -1,9 +1,10 @@
 iris.model(function (self) {
 	
 	self.defaults = {
-		  level: ""	// 'easy' / 'medium' / 'hard'
+		  level: ""		// 'easy' / 'medium' / 'hard'
 		, challenges: {}
-		, active: null
+		, active: null 	// Active challenge
+		, board: null 	// Current board
 	};
 	
 	var

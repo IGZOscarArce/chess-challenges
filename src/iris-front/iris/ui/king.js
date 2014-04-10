@@ -1,8 +1,11 @@
 iris.ui(function (self) {
 
-	// self.settings({
-	//	setting : null
-	// });
+	self.settings({
+		  col: null
+		, row: null
+		, color: null
+		, img: "" // "img/Chess_kdt45.svg" / "img/Chess_klt45.svg"
+	});
 
 	// var resource = iris.resource(iris.path.resource);
 
@@ -10,6 +13,17 @@ iris.ui(function (self) {
 		
 		// self.tmplMode(self.APPEND);
 		self.tmpl(iris.path.ui.king.html);
+
+		self.setting(
+			  "img"
+			, self.setting("color") === chess.color.WHITE
+				? "img/Chess_kdt45.svg"
+				: "img/Chess_klt45.svg"
+		);
+
+		self.inflate({
+			img: self.setting("img")
+		});
 	};
 
 	// self.awake = function () {

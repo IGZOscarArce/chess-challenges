@@ -6,6 +6,7 @@ iris.model(function (self) {
 		, id: ""
 		, problems: []			// list of problems
 		, status: 'inactive' 	// inactive / active / done / reject
+		, active: 0
 	};
 	
 	self.events('done:challenge', 'reject:challenge');
@@ -24,6 +25,10 @@ iris.model(function (self) {
 		self.unset("problem_list");
         self.set("problems", problems);
     };
+
+    self.getActive = function() {
+    	return self.get("problems")[self.get("active")];
+    }
 
     self.reject = function(){
     	self.set("status", "reject");
