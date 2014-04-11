@@ -26,3 +26,90 @@ welcome {
 .square.black {
 	background: darkgray;
 }
+
+.board {
+	cursor: pointer;
+}
+.board.b {
+	cursor: url(../img/Chess_bdt45.svg) 20 20, auto;
+}
+.board.B {
+	cursor: url(../img/Chess_blt45.svg) 20 20, auto;
+}
+.board.k {
+	cursor: url(../img/Chess_kdt45.svg) 20 20, auto;
+}
+.board.K {
+	cursor: url(../img/Chess_klt45.svg) 20 20, auto;
+}
+.board.n {
+	cursor: url(../img/Chess_ndt45.svg) 20 20, auto;
+}
+.board.N {
+	cursor: url(../img/Chess_nlt45.svg) 20 20, auto;
+}
+.board.p {
+	cursor: url(../img/Chess_pdt45.svg) 20 20, auto;
+}
+.board.P {
+	cursor: url(../img/Chess_plt45.svg) 20 20, auto;
+}
+.board.q {
+	cursor: url(../img/Chess_qdt45.svg) 20 20, auto;
+}
+.board.Q {
+	cursor: url(../img/Chess_qlt45.svg) 20 20, auto;
+}
+.board.r {
+	cursor: url(../img/Chess_rdt45.svg) 20 20, auto;
+}
+.board.R {
+	cursor: url(../img/Chess_rlt45.svg) 20 20, auto;
+}
+
+.square .piece {
+	width: 50px;
+	height: 50px;
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+.square .black .piece.bishop {
+	background-image: url('../img/Chess_bdt45.svg');
+}
+.square .white .piece.bishop {
+	background-image: url('../img/Chess_blt45.svg');
+}
+.square .black .piece.king {
+	background-image: url('../img/Chess_kdt45.svg');
+}
+.square .white .piece.king {
+	background-image: url('../img/Chess_klt45.svg');
+}
+.square .black .piece.knight {
+	background-image: url('../img/Chess_ndt45.svg');
+}
+.square .white .piece.knight {
+	background-image: url('../img/Chess_nlt45.svg');
+}
+.square .black .piece.pawn {
+	background-image: url('../img/Chess_pdt45.svg');
+}
+.square .white .piece.pawn {
+	background-image: url('../img/Chess_plt45.svg');
+}
+.square .black .piece.queen {
+	background-image: url('../img/Chess_qdt45.svg');
+}
+.square .white .piece.queen {
+	background-image: url('../img/Chess_qlt45.svg');
+}
+.square .black .piece.rook {
+	background-image: url('../img/Chess_rdt45.svg');
+}
+.square .white .piece.rook {
+	background-image: url('../img/Chess_rlt45.svg');
+}
+
+.square .moving .piece {
+	opacity: 0.3;
+}

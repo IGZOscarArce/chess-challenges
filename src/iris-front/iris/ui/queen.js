@@ -12,10 +12,6 @@ iris.ui(function (self) {
 		
 		self.tmplMode(self.APPEND);
 		self.tmpl(iris.path.ui.queen.html);
-
-		self.inflate({
-			img: chess.image[self.setting("color")].QUEEN
-		});
 	};
 
 	// self.awake = function () {

@@ -12,10 +12,6 @@ iris.ui(function (self) {
 		
 		self.tmplMode(self.APPEND);
 		self.tmpl(iris.path.ui.rook.html);
-
-		self.inflate({
-			img: chess.image[self.setting("color")].ROOK
-		});
 	};
 
 	// self.awake = function () {

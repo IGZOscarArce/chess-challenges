@@ -26,7 +26,7 @@ iris.ui(function (self) {
 		chessModel.set("board", boardModel);
 		squaresModel = boardModel.get("squares");
 
-		for (var row=8, ROW=1; row>=ROW; row--) {
+		for (var row=1, ROW=8; row<=ROW; row++) {
 			for (var i=0, I=chess.board.COLS.length; i<I; i++) {
 				squares[chess.board.COLS[i]+row] = self.ui(row, iris.path.ui.square.js, {
 					  col: chess.board.COLS[i]
@@ -36,6 +36,22 @@ iris.ui(function (self) {
 				});
 			}
 		}
+
+		boardModel.on("move:start",onMoveStart);
+		boardModel.on("move:end", onMoveEnd);
+		boardModel.on("move:cancel", onMoveCancel);
 	};
+
+	function onMoveStart(p_move) {
+		self.get().addClass(p_move.from.piece);
+	}
+
+	function onMoveEnd(p_move) {
+		self.get().removeClass("B b k K n N p P q Q r R");
+	}
+
+	function onMoveCancel(p_move) {
+		self.get().removeClass("B b k K n N p P q Q r R");
+	}
 
 },iris.path.ui.board.js);

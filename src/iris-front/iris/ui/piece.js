@@ -23,6 +23,7 @@ iris.ui(function (self) {
 
 	self.create = function() {
 
+		self.tmplMode(self.APPEND);
 		self.tmpl(iris.path.ui.piece.html);
 
 		var
@@ -37,11 +38,14 @@ iris.ui(function (self) {
 
 		self.get()
 			.addClass(color === chess.color.WHITE ? "white" : "black")
-			.on("dragstart", onDragStart);
-	};
+		;
 
-	function onDragStart(p_ev) {
-		boardModel.moving(self.settings());
-	}
+		boardModel.on("move:start", function(p_move) {
+			iris.log(">>>>>>>>>>>>>>", p_move.from, self.settings());
+			if (p_move.from.col === self.setting("col") && p_move.from.row === self.setting("row")) {
+				self.get().addClass("moving");
+			}
+		});
+	};
 
 },iris.path.ui.piece.js);

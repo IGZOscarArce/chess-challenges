@@ -27,10 +27,10 @@ iris.model(function (self) {
 							// "Q" (White can castle queenside), 
 							// "k" (Black can castle kingside),
 							// and/or "q" (Black can castle queenside)
-		, moving: null 		// Piece moving
+		, moving: null 		// Square
 	};
 	
-	self.events('piece:moving', 'piece:moved');
+	self.events('move:start', 'move:end', 'move:cancel');
 
 	self.create = function(p_settings) {
 		////////////////////////////////////////
@@ -52,29 +52,71 @@ iris.model(function (self) {
 		});
     };
 
-    self.moving = function(p_piece) {
-    	self.set("moving", p_piece);
-    	self.notify("piece:moving", {
-    		piece: p_piece
+    self.moveCancel = function() {
+    	self.notify("move:cancel", {
+    		from: self.set("moving")
+    	});
+    	self.set("moving", null);
+    };
+
+    self.move = function(p_square) {
+    	if (self.get("moving")) { // Finish move
+    		// TODO: check move
+    		moved(p_square);
+    	}
+    	else if (p_square.piece
+    		&& (
+    			   chess.color.isWhitePiece(p_square.piece) && self.get("turn") === "w"
+    			|| chess.color.isBlackPiece(p_square.piece) && self.get("turn") === "b"
+    		)
+    	) { // Start move
+    		moving(p_square);
+    	}
+    };
+
+    function moving(p_square) {
+    	self.set("moving", p_square);
+    	self.notify("move:start", {
+    		from: p_square
     	});
     };
 
-    self.moved = function(p_square) {
+    function moved(p_square) {
     	var
-    		  piece = self.get("moving")
+    		  square = self.get("moving")
     		, squares = self.get("squares")
-    		, from = squares[piece.col][piece.row]
+    		, from = squares[square.col][square.row]
     		, to = squares[p_square.col][p_square.row]
+    		, pieceMoved = from.get("piece")
+    		, pieceEaten = to.get("piece")
     	;
-    	self.notify("piece:moved", {
-    		  piece: self.get("moving")
-    		, from: squares[piece.col][piece.row]
-    		, to: squares[p_square.col][p_square.row]
-    	});
-    	// TODO: update board
-    	self.set("piece", null);
-    	to.set("piece", from.get("piece"));
-    	from.set("piece", null);
+    	if (from === to) {
+    		self.moveCancel();
+    	}
+    	else {
+	    	self.notify("move:end", {
+	    		  piece: pieceMoved
+	    		, from: from
+	    		, to: to
+	    	});
+	    	// TODO: update board
+	    	var
+	    		turn = self.get("turn")
+	    	;
+	    	self.set("moving", null);
+	    	self.set("turn", turn === "w" ? "b" : "w");
+	    	self.set("halfmoves", pieceEaten || chess.piece.isPawn(pieceMoved)
+	    		? 0
+	    		: self.get("halfmoves")+1
+	    	);
+	    	if (turn === "b") {
+	    		self.set("fullmoves", self.get("fullmoves")+1);
+	    	}
+	    	// TODO: update passant & casting
+	    	//self.set("piece", null);
+	    	to.set("piece", from.get("piece"));
+	    	from.set("piece", null);
+	    }
     };
 	
 	function fenToSquares(p_fenPos) {
@@ -96,10 +138,10 @@ iris.model(function (self) {
 		for (var row=0; row<8; row++) {
 			squaresFen = rows[row].split("");
 			for (var col=0; col<8; col++) {
-				squares[COLS_HASHMAP[col]][row+1] = iris.model(
+				squares[COLS_HASHMAP[col]][8-row] = iris.model(
 					  iris.path.model.square.js
 					, {
-						  row: row+1
+						  row: 8-row
 						, col: COLS_HASHMAP[col]
 						, piece: squaresFen[col].trim()
 					}

@@ -33,37 +33,14 @@ iris.ui(function (self) {
 			: "black"
 		);
 
-		self.get().on("dragover", onDragOver);
-		self.get().on("drop", onDrop);
+		self.get().on("touch click", onSquareClick);
 		squareModel.on("change", onChanged);
 	};
 
-	// self.setPiece = function(p_piece){
-	// 	self.destroyUIs("piece");
-	// 	if (p_piece) {
-	// 		var
-	// 			settings = p_piece.settings()
-	// 		;
-	// 		self.setting("piece", p_piece.setting("piece"));
-	// 		self.ui("piece", iris.path.ui.piece.js, {
-	// 			  piece: p_piece.setting("piece")
-	// 			, col: p_piece.setting("col")
-	// 			, row: p_piece.setting("row")
-	// 		});
-	// 	}
-	// };
-
-	// self.getPiece = function(){
-	// 	return self.ui("piece");
-	// };
-
-	function onDragOver(p_ev) {
-		p_ev.preventDefault();
-	}
-
-	function onDrop(p_ev) {
-		p_ev.preventDefault();
-		boardModel.moved(self.settings());
+	function onSquareClick(p_ev) {
+		p_ev.stopPropagation();
+		boardModel.move(self.settings());
+		return;
 	}
 
 	function onChanged(p_changed) {

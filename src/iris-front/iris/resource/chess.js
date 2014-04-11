@@ -14,7 +14,7 @@ iris.resource(function (self) {
 	};
 
 	self.loadChallenges = function() {
-		if (iris.isLocalhost()) {
+		if (iris.isLocalhost() || true) {
 			var
 				dfd = new jQuery.Deferred()
 			;
