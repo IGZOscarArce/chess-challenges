@@ -48,4 +48,8 @@ iris.ui(function (self) {
 		});
 	};
 
+	self.moves = function() {
+		return self.ui("piece").moves();
+	};
+
 },iris.path.ui.piece.js);
