@@ -113,3 +113,46 @@ welcome {
 .square .moving .piece {
 	opacity: 0.3;
 }
+
+.clock {
+	position: relative;
+	width: 128px;
+	height: 128px;
+	background: url('../img/128px-Analogue_clock_face.svg.png') no-repeat;
+}
+
+.clock > .hand {
+	position: absolute;
+	width: 128px;
+	height: 128px;
+}
+
+.clock > .hand.minute { 
+	background: url('../img/Lancetta00.png') 11px -32px no-repeat;
+	-moz-transition: 0s linear;
+	-o-transition: 0s linear;
+	-ms-transition: 0s linear;
+	-webkit-transition: 0s linear;
+	transition: 0s linear;
+	-moz-transform: rotate(0deg);
+	-o-transform: rotate(0deg);
+	-ms-transform: rotate(0deg);
+	-webkit-transform: rotate(0deg);
+	transform: rotate(0deg);
+	background-size: 110px;
+}
+
+.clock > .hand.second {
+	background: url('../img/Lancettina00.png') 6px -32px no-repeat;
+	-moz-transition: 0s linear;
+	-o-transition: 0s linear;
+	-ms-transition: 0s linear;
+	-webkit-transition: 0s linear;
+	transition: 0s linear;
+	-moz-transform: rotate(0deg);
+	-o-transform: rotate(0deg);
+	-ms-transform: rotate(0deg);
+	-webkit-transform: rotate(0deg);
+	transform: rotate(0deg);
+	background-size: 120px;
+}

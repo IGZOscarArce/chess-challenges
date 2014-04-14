@@ -56,6 +56,10 @@ iris.path = {
       "html": "ui/challenges_listitem.html",
       "js": "ui/challenges_listitem.js"
     },
+    "clock": {
+      "html": "ui/clock.html",
+      "js": "ui/clock.js"
+    },
     "king": {
       "html": "ui/king.html",
       "js": "ui/king.js"

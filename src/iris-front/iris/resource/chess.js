@@ -45,12 +45,12 @@ var _MOCKED_CHALLENGES = {
 		, problem_list: [
 			{
 				  time: 600 // seconds
-				, description: "problem 1"
+				, description: "white to move and mate in 2 moves"
 				, solution_boards: [
-					  { fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" }
-					, { fen: "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1" }
-					, { fen: "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2" }
-					, { fen: "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2" }
+					  { fen: "7B/8/8/8/R7/1Pn5/BrP1p3/k1K1R3 w - - 0 1" }
+					, { fen: "7B/8/8/8/R7/1Pn5/BrPKp3/k3R3 b - - 1 1" }
+					, { fen: "7B/8/8/8/R7/1P6/BrPKp3/k2nR3 w - - 2 2" }
+					, { fen: "7B/8/8/8/R7/1P6/1rPKp3/kB1nR3 b - - 3 2" }
 				]
 			}
 		]
