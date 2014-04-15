@@ -1,7 +1,15 @@
 iris.model(function (self) {
 	
 	var
-		COLS_HASHMAP = {0: "a", 1: "b", 2: "c", 3: "d", 4: "e", 5: "f", 6: "g", 7: "h"} // Col names
+		  COLS_HASHMAP = {0: "a", 1: "b", 2: "c", 3: "d", 4: "e", 5: "f", 6: "g", 7: "h"} // Col names
+		, MOVES_HASHMAP = {
+			  "K": kingMoves
+			, "Q": queenMoves
+			, "R": rookMoves
+			, "B": bishopMoves
+			, "N": knightMoves
+			, "P": pawnMoves
+		}
 	;
 	
 	self.defaults = {
@@ -30,9 +38,9 @@ iris.model(function (self) {
 		, moving: null 		// Square
 	};
 	
-	self.events('move:start', 'move:end', 'move:cancel');
+	self.events('move:start', 'move:end', 'move:reject', 'move:start:reject');
 
-	self.create = function(p_settings) {
+	self.create = function() {
 		////////////////////////////////////////
 		// FEN (initial chess position):
 		// rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
@@ -53,32 +61,38 @@ iris.model(function (self) {
     };
 
     self.moveCancel = function() {
-    	self.notify("move:cancel", {
-    		from: self.set("moving")
+    	self.notify("move:reject", {
+    		from: self.get("moving")
     	});
     	self.set("moving", null);
     };
 
     self.move = function(p_square) {
     	if (self.get("moving")) { // Finish move
-    		// TODO: check move
     		moved(p_square);
     	}
-    	else if (p_square.piece
-    		&& (
-    			   chess.color.isWhitePiece(p_square.piece) && self.get("turn") === "w"
-    			|| chess.color.isBlackPiece(p_square.piece) && self.get("turn") === "b"
-    		)
-    	) { // Start move
+    	else { // Start move
     		moving(p_square);
     	}
     };
 
     function moving(p_square) {
-    	self.set("moving", p_square);
-    	self.notify("move:start", {
-    		from: p_square
-    	});
+    	if (p_square.piece
+    		&& (
+    			   chess.color.isWhitePiece(p_square.piece) && self.get("turn") === "w"
+    			|| chess.color.isBlackPiece(p_square.piece) && self.get("turn") === "b"
+    		)
+    	) {
+    		self.set("moving", p_square);
+    		self.notify("move:start", {
+    			from: p_square
+    		});
+    	}
+    	else {
+    		self.notify("move:start:reject", {
+    			from: p_square
+    		});
+    	}
     };
 
     function moved(p_square) {
@@ -90,32 +104,37 @@ iris.model(function (self) {
     		, pieceMoved = from.get("piece")
     		, pieceEaten = to.get("piece")
     	;
-    	if (from === to) {
-    		self.moveCancel();
-    	}
-    	else {
-	    	self.notify("move:end", {
-	    		  piece: pieceMoved
-	    		, from: from
-	    		, to: to
-	    	});
+    	if (isValidMove(from, to)) {
 	    	// TODO: update board
 	    	var
-	    		turn = self.get("turn")
+	    		  turn = self.get("turn")
+	    		, position
 	    	;
+	    	to.set("piece", from.get("piece"));
+	    	from.set("piece", null);
 	    	self.set("moving", null);
 	    	self.set("turn", turn === "w" ? "b" : "w");
 	    	self.set("halfmoves", pieceEaten || chess.piece.isPawn(pieceMoved)
 	    		? 0
-	    		: self.get("halfmoves")+1
+	    		: (self.get("halfmoves") >> 0) + 1
 	    	);
 	    	if (turn === "b") {
-	    		self.set("fullmoves", self.get("fullmoves")+1);
+	    		self.set("fullmoves", (self.get("fullmoves") >> 0) + 1);
 	    	}
 	    	// TODO: update passant & casting
 	    	//self.set("piece", null);
-	    	to.set("piece", from.get("piece"));
-	    	from.set("piece", null);
+	    	position = squaresToFenPos()
+	    	self.set("position", position);
+	    	self.set("fen", position + " " + self.get("turn") + " " + self.get("casting") + " " + self.get("passant") + " " + self.get("halfmoves") + " " + self.get("fullmoves"));
+	    	self.notify("move:end", {
+	    		  piece: pieceMoved
+	    		, from: from
+	    		, to: to
+	    		, fen: self.get("fen")
+	    	});
+	    }
+	    else {
+	    	self.moveCancel();
 	    }
     };
 	
@@ -175,6 +194,126 @@ iris.model(function (self) {
 		;
 		
 		return fenPos;
+	}
+
+	function isValidMove(p_squareFrom, p_squareTo) {
+		if (p_squareFrom.get("row") === p_squareTo.get("row") && p_squareFrom.get("col") === p_squareTo.get("col")) {
+			return false;
+		}
+		else {
+			var
+				  pieceMoved = p_squareFrom.get("piece")
+				, pieceEated = p_squareTo.get("piece")
+			;
+			if (chess.color.getPieceColor(pieceMoved) === chess.color.getPieceColor(pieceEated)) {
+				return false;
+			}
+			if (!MOVES_HASHMAP[pieceMoved.toUpperCase()](p_squareFrom, p_squareTo)) { // Check if piece can move to this square without any consideration
+				return false;
+			}
+			
+		}
+
+		return true;
+	}
+
+	function kingMoves(p_squareFrom, p_squareTo) {
+		var
+			  squares = []
+			, col = p_squareFrom.get("col")
+			, row = p_squareFrom.get("row")
+			, colIndex = chess.board.COLS.indexOf(p_squareFrom.get("col"))
+			, cols = col === "a"
+				? ["a", "b"]
+				: col === "h"
+					? ["g", "h"]
+					: [chess.board.COLS[colIndex-1], chess.board.COLS[colIndex], chess.board.COLS[colIndex+1]]
+			, rows = row === 1
+				? [1, 2]
+				: row === 8
+					? [7, 8]
+					: [row-1, row, row+1]
+		;
+		for (var i=0, I=cols.length; i<I; i++) {
+			for (var j=0, J=rows.length; j<J; j++) {
+				if (cols[i] !== col || rows[j] !== row) {
+					square = iris.model(
+						  iris.path.model.square.js
+						, {
+							  row: rows[j]
+							, col: cols[i]
+						  }
+					);
+					if (!p_squareTo) {
+						squares.push(square);
+					}
+					else if (p_squareTo.get("col") === cols[i] && p_squareTo.get("row") === rows[j]) {
+						squares.push(square);
+						break;
+					}
+				}
+			}
+		}
+
+		return p_squareTo
+			? squares.length > 0
+			: squares
+		;
+	}
+
+	function queenMoves(p_squareFrom, p_squareTo) {
+		var
+			  moves = []
+			, piece = p_squareFrom.get("piece").toUpperCase()
+		;
+		return p_squareTo
+			? moves.length > 0
+			: moves
+		;
+	}
+
+	function rookMoves(p_squareFrom, p_squareTo) {
+		var
+			  moves = []
+			, piece = p_squareFrom.get("piece").toUpperCase()
+		;
+		return p_squareTo
+			? moves.length > 0
+			: moves
+		;
+	}
+
+	function bishopMoves(p_squareFrom, p_squareTo) {
+		var
+			  moves = []
+			, piece = p_squareFrom.get("piece").toUpperCase()
+		;
+		return p_squareTo
+			? moves.length > 0
+			: moves
+		;
+	}
+
+	function knightMoves(p_squareFrom, p_squareTo) {
+		var
+			  moves = []
+			, piece = p_squareFrom.get("piece").toUpperCase()
+		;
+		return p_squareTo
+			? moves.length > 0
+			: moves
+		;
+	}
+
+	function pawnMoves(p_squareFrom, p_squareTo) {
+		var
+			  moves = []
+			, piece = p_squareFrom.get("piece").toUpperCase()
+		;
+		return p_squareTo
+			? moves.length > 0
+			: moves
+		;
 	}
 	
 }, iris.path.model.board.js);

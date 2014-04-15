@@ -40,16 +40,31 @@ iris.ui(function (self) {
 			.addClass(color === chess.color.WHITE ? "white" : "black")
 		;
 
-		boardModel.on("move:start", function(p_move) {
-			iris.log(">>>>>>>>>>>>>>", p_move.from, self.settings());
-			if (p_move.from.col === self.setting("col") && p_move.from.row === self.setting("row")) {
-				self.get().addClass("moving");
-			}
-		});
+		// boardModel.on("move:start", function(p_move) {
+		// 	if (p_move.from.col === self.setting("col") && p_move.from.row === self.setting("row")) {
+		// 		self.get().addClass("moving");
+		// 	}
+		// });
+		// boardModel.on("move:reject", function(p_move) {
+		// 	if (p_move.from.col === self.setting("col") && p_move.from.row === self.setting("row")) {
+		// 		self.get().removeClass("moving");
+		// 	}
+		// });
 	};
 
-	self.moves = function() {
-		return self.ui("piece").moves();
+	self.moves = function(p_squareTo) {
+		return self.ui("piece")[0].moves(p_squareTo);
+	};
+
+	self.setMoving = function(p_moving) {
+		// TODO: toggle?
+		//self.get().removeClass("moving", p_moving);
+		if (!p_moving) {
+			self.get().removeClass("moving");
+		}
+		else {
+			self.get().addClass("moving");
+		}
 	};
 
 },iris.path.ui.piece.js);

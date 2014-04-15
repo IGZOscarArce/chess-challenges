@@ -14,7 +14,7 @@ iris.ui(function (self) {
 		self.tmpl(iris.path.ui.king.html);
 	};
 
-	self.moves = function() {
+	self.moves = function(p_squareTo) {
 		var
 			  colIndex = chess.board.COLS.indexOf(self.setting("col"))
 			, cols = self.setting("col") === "a"
@@ -39,12 +39,28 @@ iris.ui(function (self) {
 							  row: rows[j]
 							, col: cols[i]
 						  }
-					);	
-					squares.push(square);
+					);
+					if (!p_squareTo) {
+						squares.push({
+							  row: rows[j]
+							, col: cols[i]
+						});
+					}
+					else if (p_squareTo.col === cols[i] && p_squareTo.row === rows[j]) {
+						squares.push({
+							  row: rows[j]
+							, col: cols[i]
+						});
+						break;
+					}
 				}
 			}
 		}
-		return squares;
+
+		return p_squareTo
+			? squares.length > 0
+			: squares
+		;
 	};
 
 	// self.awake = function () {

@@ -37,19 +37,36 @@ iris.ui(function (self) {
 		squareModel.on("change", onChanged);
 	};
 
+	self.moves = function(p_squareTo) {
+		return self.ui("piece")[0].moves(p_squareTo);
+	};
+
+	self.setPieceMoving = function(p_moving) {
+		self.ui("piece")[0] && self.ui("piece")[0].setMoving(p_moving);
+	};
+
 	function onSquareClick(p_ev) {
-		p_ev.stopPropagation();
-		boardModel.move(self.settings());
-		return;
+		var
+			  moveToSquare = { // to
+				  col: self.setting("col")
+				, row: self.setting("row")
+				, piece: self.setting("piece")
+			  }
+			, moving = boardModel.get("moving") // from
+		;
+		boardModel.move(moveToSquare);
+		if(!moving) {
+			self.setPieceMoving(true);
+		}
 	}
 
 	function onChanged(p_changed) {
 		var
 			piece = squareModel.get("piece")
 		;
+		self.setting("piece", piece);
 		self.destroyUIs("piece");
 		if (piece) {
-			self.setting("piece", piece);
 			self.ui("piece", iris.path.ui.piece.js, {
 				  piece: piece
 				, col: self.setting("col")

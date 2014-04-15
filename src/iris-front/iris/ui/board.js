@@ -9,6 +9,7 @@ iris.ui(function (self) {
 		, chessModel = chessResource.getModel()
 		, boardModel
 		, squares = {}
+		, fens = []
 	;
 
 	self.create = function() {
@@ -20,6 +21,7 @@ iris.ui(function (self) {
 		;
 		self.tmpl(iris.path.ui.board.html);
 
+		fens.push(self.setting("fen"));
 		boardModel = iris.model(iris.path.model.board.js, {
 			fen: self.setting("fen")
 		});
@@ -28,7 +30,7 @@ iris.ui(function (self) {
 
 		for (var row=1, ROW=8; row<=ROW; row++) {
 			for (var i=0, I=chess.board.COLS.length; i<I; i++) {
-				squares[chess.board.COLS[i]+row] = self.ui(row, iris.path.ui.square.js, {
+				squares[squareKey(i ,row)] = self.ui(row, iris.path.ui.square.js, {
 					  col: chess.board.COLS[i]
 					, row: row
 					, piece: squaresModel[chess.board.COLS[i]][row].get("piece")
@@ -39,19 +41,34 @@ iris.ui(function (self) {
 
 		boardModel.on("move:start",onMoveStart);
 		boardModel.on("move:end", onMoveEnd);
-		boardModel.on("move:cancel", onMoveCancel);
+		boardModel.on("move:reject", onMoveReject);
 	};
 
+	function squareKey(p_col, p_row) {
+		var
+			col = !isNaN(p_col) ? chess.board.COLS[p_col] : p_col
+		;
+		return col+p_row;
+	}
+
 	function onMoveStart(p_move) {
-		self.get().addClass(p_move.from.piece);
+		self.get().addClass(p_move.from.piece); // Change cursor image (moving piece img)
 	}
 
 	function onMoveEnd(p_move) {
-		self.get().removeClass("B b k K n N p P q Q r R");
+		self.setting("fen", p_move.fen);
+		fens.push(self.setting("fen"));
+		self.get().removeClass("B b k K n N p P q Q r R"); // Change cursor image (remove moving piece img)
 	}
 
-	function onMoveCancel(p_move) {
-		self.get().removeClass("B b k K n N p P q Q r R");
+	function onMoveReject(p_move) {
+		var
+			  moving = p_move.from
+			, movingSquareKey = squareKey(moving.col, moving.row)
+			, movingSquare = squares[movingSquareKey]
+		;
+		movingSquare.setPieceMoving(false);
+		self.get().removeClass("B b k K n N p P q Q r R"); // Change cursor image (remove moving piece img)
 	}
 
 },iris.path.ui.board.js);

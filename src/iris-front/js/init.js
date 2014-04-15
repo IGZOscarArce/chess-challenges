@@ -24,7 +24,7 @@ chess = new function() {
         	   return p_fenPiece === p_fenPiece.toLowerCase();
           }
         , getPieceColor: function (p_fenPiece) {
-        	   return p_fenPiece === p_fenPiece.toUpperCase();
+        	   return p_fenPiece && p_fenPiece === p_fenPiece.toUpperCase();
           }
         , getSquareColor: function (p_row, p_col) {
         	   return p_row % 2 === 0 && p_col % 2 === 0
