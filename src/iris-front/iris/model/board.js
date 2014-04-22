@@ -208,7 +208,7 @@ iris.model(function (self) {
 			if (chess.color.getPieceColor(pieceMoved) === chess.color.getPieceColor(pieceEated)) {
 				return false;
 			}
-			if (!MOVES_HASHMAP[pieceMoved.toUpperCase()](p_squareFrom, p_squareTo)) { // Check if piece can move to this square without any consideration
+			if (!pieceMoves(p_squareFrom, p_squareTo)) { // Check if piece can move to this square without any context consideration
 				return false;
 			}
 			
@@ -217,39 +217,38 @@ iris.model(function (self) {
 		return true;
 	}
 
-	function kingMoves(p_squareFrom, p_squareTo) {
+	function pieceMoves(p_squareFrom, p_squareTo) {
 		var
 			  squares = []
+			, pieceMoved = p_squareFrom.get("piece")
+			, pieceMoves = MOVES_HASHMAP[pieceMoved.toUpperCase()](p_squareFrom, p_squareTo)
 			, col = p_squareFrom.get("col")
 			, row = p_squareFrom.get("row")
-			, colIndex = chess.board.COLS.indexOf(p_squareFrom.get("col"))
-			, cols = col === "a"
-				? ["a", "b"]
-				: col === "h"
-					? ["g", "h"]
-					: [chess.board.COLS[colIndex-1], chess.board.COLS[colIndex], chess.board.COLS[colIndex+1]]
-			, rows = row === 1
-				? [1, 2]
-				: row === 8
-					? [7, 8]
-					: [row-1, row, row+1]
+			, cols = pieceMoves.cols
+			, rows = pieceMoves.rows
 		;
 		for (var i=0, I=cols.length; i<I; i++) {
-			for (var j=0, J=rows.length; j<J; j++) {
-				if (cols[i] !== col || rows[j] !== row) {
-					square = iris.model(
-						  iris.path.model.square.js
-						, {
-							  row: rows[j]
-							, col: cols[i]
-						  }
-					);
-					if (!p_squareTo) {
-						squares.push(square);
+			if (cols[i]) { // May be null, for example: chess.board.COLS[-1]
+				for (var j=0, J=rows.length; j<J; j++) {
+					if (rows[j] < 1 || rows[j] > 8) {
+						rows.splice(rows.indexOf(rows[j]), 1);
+						j--;
 					}
-					else if (p_squareTo.get("col") === cols[i] && p_squareTo.get("row") === rows[j]) {
-						squares.push(square);
-						break;
+					else if (cols[i] !== col || rows[j] !== row) {
+						square = iris.model(
+							  iris.path.model.square.js
+							, {
+								  row: rows[j]
+								, col: cols[i]
+							  }
+						);
+						if (!p_squareTo) {
+							squares.push(square);
+						}
+						else if (p_squareTo.get("col") === cols[i] && p_squareTo.get("row") === rows[j]) {
+							squares.push(square);
+							break;
+						}
 					}
 				}
 			}
@@ -261,59 +260,149 @@ iris.model(function (self) {
 		;
 	}
 
-	function queenMoves(p_squareFrom, p_squareTo) {
+	function kingMoves(p_squareFrom) {
 		var
-			  moves = []
-			, piece = p_squareFrom.get("piece").toUpperCase()
+			  col = p_squareFrom.get("col")
+			, row = p_squareFrom.get("row")
+			, colIndex = chess.board.COLS.indexOf(p_squareFrom.get("col"))
+			, cols = [
+				  chess.board.COLS[colIndex-1]
+				, chess.board.COLS[colIndex]
+				, chess.board.COLS[colIndex+1]
+			]
+			, rows = [
+				  row-1
+				, row
+				, row+1
+			]
 		;
-		return p_squareTo
-			? moves.length > 0
-			: moves
-		;
+
+		return {
+			  cols: cols
+			, rows: rows
+		};
 	}
 
-	function rookMoves(p_squareFrom, p_squareTo) {
+	function queenMoves(p_squareFrom) { // TODO
 		var
-			  moves = []
-			, piece = p_squareFrom.get("piece").toUpperCase()
+			  col = p_squareFrom.get("col")
+			, row = p_squareFrom.get("row")
+			, colIndex = chess.board.COLS.indexOf(p_squareFrom.get("col"))
+			, cols = [
+				  chess.board.COLS[colIndex-1]
+				, chess.board.COLS[colIndex]
+				, chess.board.COLS[colIndex+1]
+			]
+			, rows = [
+				  row-1
+				, row
+				, row+1
+			]
 		;
-		return p_squareTo
-			? moves.length > 0
-			: moves
-		;
+
+		return {
+			  cols: cols
+			, rows: rows
+		};
 	}
 
-	function bishopMoves(p_squareFrom, p_squareTo) {
+	function rookMoves(p_squareFrom) { // TODO
 		var
-			  moves = []
-			, piece = p_squareFrom.get("piece").toUpperCase()
+			  col = p_squareFrom.get("col")
+			, row = p_squareFrom.get("row")
+			, colIndex = chess.board.COLS.indexOf(p_squareFrom.get("col"))
+			, cols = [
+				  chess.board.COLS[colIndex-1]
+				, chess.board.COLS[colIndex]
+				, chess.board.COLS[colIndex+1]
+			]
+			, rows = [
+				  row-1
+				, row
+				, row+1
+			]
 		;
-		return p_squareTo
-			? moves.length > 0
-			: moves
-		;
+
+		return {
+			  cols: cols
+			, rows: rows
+		};
 	}
 
-	function knightMoves(p_squareFrom, p_squareTo) {
+	function bishopMoves(p_squareFrom) { // TODO
 		var
-			  moves = []
-			, piece = p_squareFrom.get("piece").toUpperCase()
+			  col = p_squareFrom.get("col")
+			, row = p_squareFrom.get("row")
+			, colIndex = chess.board.COLS.indexOf(p_squareFrom.get("col"))
+			, cols = [
+				  chess.board.COLS[colIndex-1]
+				, chess.board.COLS[colIndex]
+				, chess.board.COLS[colIndex+1]
+			]
+			, rows = [
+				  row-1
+				, row
+				, row+1
+			]
 		;
-		return p_squareTo
-			? moves.length > 0
-			: moves
+
+		return {
+			  cols: cols
+			, rows: rows
+		};
+	}
+
+	function knightMoves(p_squareFrom) {
+		var
+			  col = p_squareFrom.get("col")
+			, row = p_squareFrom.get("row")
+			, colIndex = chess.board.COLS.indexOf(p_squareFrom.get("col"))
+			, cols = [
+				  chess.board.COLS[colIndex-2]
+				, chess.board.COLS[colIndex-1]
+				, chess.board.COLS[colIndex+1]
+				, chess.board.COLS[colIndex+2]
+			]
+			, rows = [
+				  row-2
+				, row-1
+				, row+1
+				, row+2
+			]
 		;
+
+		return {
+			  cols: cols
+			, rows: rows
+		};
 	}
 
 	function pawnMoves(p_squareFrom, p_squareTo) {
 		var
-			  moves = []
-			, piece = p_squareFrom.get("piece").toUpperCase()
+			  pieceMovedColor = chess.color.getPieceColor(p_squareFrom.get("piece"))
+			, pieceEatedColor = chess.color.getPieceColor(p_squareTo.get("piece"))
+			, col = p_squareFrom.get("col")
+			, row = p_squareFrom.get("row")
+			, colIndex = chess.board.COLS.indexOf(p_squareFrom.get("col"))
+			, cols = pieceEatedColor !== chess.color.WHITE && pieceEatedColor !== chess.color.BLACK
+				? [chess.board.COLS[colIndex]]
+				: pieceEatedColor !== pieceMovedColor
+					? [chess.board.COLS[colIndex-1], chess.board.COLS[colIndex+1]]
+					: []
+			, rows = [pieceMovedColor === chess.color.WHITE ? row+1 : row-1]
 		;
-		return p_squareTo
-			? moves.length > 0
-			: moves
-		;
+
+		if (row === 2 && pieceMovedColor === chess.color.WHITE) {
+			rows.push(row+2);
+		}
+		else if (row === 7 && pieceMovedColor === chess.color.BLACK) {
+			rows.push(row-2);
+		}
+
+		return {
+			  cols: cols
+			, rows: rows
+		};
 	}
 	
 }, iris.path.model.board.js);
